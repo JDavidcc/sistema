@@ -4,27 +4,22 @@
 const { error } = require('console')
 const mysql = require('mysql')
 
-const connection = mysql.createConnection({
+// Conexion a la base de datos MySQL
+const poll = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  port: '3306',
   password: '',
-  database: 'sistemaescolar'
-})
-
-connection.connect((err) => {
-  if (err) {
-    console.error('Error al conectar con la base de datos MySQL: ', err)
-    return
-  }
-  console.log('Conectado a la base de datos MySQL.')
-})
+  database: 'sistemaescolar',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
 function ValidarUsuario (correo, pass) {
   return new Promise((resolve, reject) => {
     const query = `SELECT * FROM usuarios WHERE correo = '${correo}' AND pass = '${pass}'`
 
-    connection.query(query, (error, results) => {
+    poll.query(query, (error, results) => {
       if (error) {
         console.error('Error en la query a la base de datos: ', error)
         reject(error)
@@ -41,6 +36,7 @@ function ValidarUsuario (correo, pass) {
     })
   })
 }
+
 module.exports = ValidarUsuario
 
 //      PRUEBA QUERY USUARIOS
