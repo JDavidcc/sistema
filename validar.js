@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable n/no-callback-literal */
-/* eslint-disable no-unused-vars */
 const { error } = require('console')
 const mysql = require('mysql')
 require('dotenv').config()
