@@ -3,13 +3,14 @@
 /* eslint-disable no-unused-vars */
 const { error } = require('console')
 const mysql = require('mysql')
+require('dotenv').config()
 
 // Conexion a la base de datos MySQL
 const poll = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'sistemaescolar',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DBNAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
