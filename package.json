@@ -1,0 +1,21 @@
+{
+  "name": "sistema",
+  "version": "1.0.0",
+  "description": "Sistema de conexion a una base de datos escolar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "NodeJS",
+    "JavaScript",
+    "html"
+  ],
+  "author": "David Cervantes -Sieghart",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mysql": "^2.18.1"
+  }
+}
