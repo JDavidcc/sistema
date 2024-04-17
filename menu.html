@@ -10,6 +10,10 @@
             window.location.href = "/";
         }
 
+        function irACarreras() {
+        window.location.href = "/carreras";
+        }
+
         function cerrarSesion() {
             fetch("/logout")
                 .then(() => {
@@ -25,5 +29,6 @@
     <h1>Menú Principal</h1>
     <button onclick="irAlInicio()">Inicio</button>
     <button onclick="cerrarSesion()">Cerrar Sesión</button>
+    <button onclick="irACarreras()">Carreras</button>
 </body>
 </html>

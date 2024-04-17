@@ -35,7 +35,7 @@ function ValidarUsuario (correo, pass) {
   })
 }
 
-module.exports = ValidarUsuario
+module.exports = { ValidarUsuario, poll };
 
 //      PRUEBA QUERY USUARIOS
 

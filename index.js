@@ -3,7 +3,8 @@ const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const session = require('express-session')
-const ValidarUsuario = require('./validar.js')
+const { ValidarUsuario } = require('./validar.js')
+const { poll } = require('./validar.js');
 const app = express()
 
 // Configurar express-session
@@ -79,6 +80,21 @@ app.get('/logout', (req, res) => {
     })
   })
 })
+
+// Ruta para obtener la lista de carreras
+app.get('/carreras', validarSesion, (req, res) => {
+  const query = 'SELECT * FROM carreras';
+
+  poll.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al obtener la lista de carreras:', error);
+      res.status(500).json({ message: 'Error al obtener la lista de carreras' });
+      return;
+    }
+    res.json(results); // Enviar la lista de carreras como respuesta
+  });
+});
+
 
 // Manejar otras rutas
 app.get('*', (req, res) => {
