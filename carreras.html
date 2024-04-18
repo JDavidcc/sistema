@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Carreras</title>
   <script>
-    // Función para manejar el error al obtener la lista de carreras
+  
     function handleError(error) {
       console.error("Error al obtener la lista de carreras:", error);
-      // Puedes agregar aquí código para mostrar un mensaje de error al usuario si lo deseas
     }
 
-    // Lógica para obtener la lista de carreras desde el servidor
+    // obtener lista de carreras desde el servidor
     fetch('/api/carreras')
       .then(response => {
         if (!response.ok) {
@@ -20,7 +19,7 @@
         return response.json();
       })
       .then(carreras => {
-        // Lógica para manejar la lista de carreras recibida
+        // manejar la lista de carreras recibida
         const carrerasList = document.getElementById('carreras-list');
         carreras.forEach(carrera => {
           const listItem = document.createElement('li');
@@ -28,7 +27,7 @@
           carrerasList.appendChild(listItem);
         });
       })
-      .catch(handleError); // Manejar cualquier error que ocurra durante la solicitud
+      .catch(handleError);
 
       function irAlInicio() {
             window.location.href = "/";

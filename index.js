@@ -6,9 +6,8 @@ const path = require('path');
 const { ValidarUsuario } = require('./validar.js');
 const { poll } = require('./validar.js');
 
-const app = express(); // Definir la instancia de la aplicación Express aquí
+const app = express();
 
-// Configurar express-session
 app.use(session({
   secret: 'secreto',
   resave: false,
@@ -62,7 +61,7 @@ app.get('/menu', validarSesion, (req, res) => {
   });
 });
 
-// ruta para cerrar sesión (logout)
+// ruta logout
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -82,7 +81,37 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Ruta para mostrar la página HTML de carreras
+// Ruta para mostrar la página HTML de materias
+app.get('/materias', validarSesion, (req, res) => {
+  const filePath = path.join(__dirname, 'materias.html');
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.status(500).send(`Error: ${err}`);
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(content);
+  });
+});
+
+// Ruta para obtener lista de materias  JSON
+app.get('/api/materias', validarSesion, (req, res) => {
+  const query = `
+    SELECT materias.id, materias.nombre, carreras.nombre AS nombre_carrera, materias.descripcion
+    FROM materias
+    INNER JOIN carreras ON materias.carrera_id = carreras.id
+  `;
+  poll.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al obtener la lista de materias:', error);
+      res.status(500).json({ message: 'Error al obtener la lista de materias' });
+      return;
+    }
+    res.json(results); // Enviar la lista de materias JSON
+  });
+});
+
+// Ruta para mostrar HTML de carreras
 app.get('/carreras', validarSesion, (req, res) => {
   const filePath = path.join(__dirname, 'carreras.html');
   fs.readFile(filePath, (err, content) => {
@@ -95,7 +124,7 @@ app.get('/carreras', validarSesion, (req, res) => {
   });
 });
 
-// Ruta para obtener la lista de carreras desde la base de datos
+// Ruta para obtener la lista de carreras 
 app.get('/api/carreras', validarSesion, (req, res) => {
   const query = 'SELECT * FROM carreras';
 
@@ -105,24 +134,7 @@ app.get('/api/carreras', validarSesion, (req, res) => {
       res.status(500).json({ message: 'Error al obtener la lista de carreras' });
       return;
     }
-    res.json(results); // Enviar la lista de carreras como respuesta en formato JSON
-  });
-});
-
-// Ruta para obtener la lista de materias
-app.get('/materias', validarSesion, (req, res) => {
-  const query = `
-    SELECT materias.id, materias.nombre, carreras.nombre AS nombre_carrera, materias.descripcion
-    FROM materias
-    INNER JOIN carreras ON materias.carrera_id = carreras.id
-  `;
-  poll.query(query, (error, results) => {
-    if (error) {
-      console.error('Error al obtener la lista de materias:', error);
-      res.status(500).json({ message: 'Error al obtener la lista de materias' });
-      return;
-    }
-    res.json(results); // Enviar la lista de materias como respuesta
+    res.json(results); // Enviar la lista
   });
 });
 
