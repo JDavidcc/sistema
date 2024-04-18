@@ -16,7 +16,7 @@
                     listaCarreras.innerHTML = ""; // Limpiar la lista antes de agregar las nuevas carreras
                     data.forEach(carrera => {
                         const li = document.createElement("li");
-                        li.textContent = carrera.nombre; // Suponiendo que el nombre de la carrera está en la columna 'nombre'
+                        li.textContent = carrera.nombre;
                         listaCarreras.appendChild(li);
                     });
                 })
@@ -47,7 +47,7 @@
 <body>
     <h1>Listado de Carreras</h1>
     <ul id="listaCarreras">
-        <!-- aqui se muestras las carreras -->
+        <!-- carreras -->
     </ul>
 
     <button onclick="irAlInicio()">Inicio</button>

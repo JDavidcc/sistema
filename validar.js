@@ -37,13 +37,3 @@ function ValidarUsuario (correo, pass) {
 
 module.exports = { ValidarUsuario, poll };
 
-//      PRUEBA QUERY USUARIOS
-
-// const usuarios = 'SELECT * FROM usuarios'
-// connection.query(usuarios, function (error, lista) {
-//   if (error) {
-//     throw error
-//   } else {
-//     console.log(lista)
-//   }
-// })

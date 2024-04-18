@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materias</title>
+    <script>
+        function obtenerMaterias() {
+            fetch("/materias")
+                .then(response => response.json())
+                .then(data => { 
+                    console.log(data)
+                    const tablaMaterias = document.getElementById("tablaMaterias");
+                    tablaMaterias.innerHTML = ""; // Limpiar la tabla antes de agregar las nuevas materias
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            const materia = data[key];
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+                                <td>${materia.nombre}</td>
+                                <td>${materia.nombre_carrera}</td>
+                            `;
+                            tablaMaterias.appendChild(tr);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al obtener la lista de materias:", error);
+                });
+        }
+    
+        window.onload = obtenerMaterias;
+    
+        function irAlInicio() {
+            window.location.href = "/";
+        }
+    
+        function cerrarSesion() {
+            fetch("/logout")
+                .then(() => {
+                    window.location.href = "/logout"; 
+                })
+                .catch((error) => {
+                    console.error("Error al cerrar sesión:", error);
+                });
+        }
+    </script>
+    
+</head>
+<body>
+    <h1>Listado de Materias</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre de la Materia</th>
+                <th>Carrera</th>
+            </tr>
+        </thead>
+        <tbody id="tablaMaterias">
+            <!-- materias -->
+        </tbody>
+    </table>
+
+    <button onclick="irAlInicio()">Inicio</button>
+    <button onclick="cerrarSesion()">Cerrar Sesión</button>
+</body>
+</html>

@@ -14,6 +14,10 @@
         window.location.href = "/carreras";
         }
 
+        function irAMaterias(){
+            window.location.href = "/materias";
+        }
+
         function cerrarSesion() {
             fetch("/logout")
                 .then(() => {
@@ -30,5 +34,6 @@
     <button onclick="irAlInicio()">Inicio</button>
     <button onclick="cerrarSesion()">Cerrar Sesión</button>
     <button onclick="irACarreras()">Carreras</button>
+    <button onclick="irAMaterias()">Materias</button>
 </body>
 </html>

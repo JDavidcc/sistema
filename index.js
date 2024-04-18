@@ -95,6 +95,25 @@ app.get('/carreras', validarSesion, (req, res) => {
   });
 });
 
+// Ruta para obtener la lista de materias con el nombre de la carrera asociada
+app.get('/materias', validarSesion, (req, res) => {
+  const query = `
+    SELECT materias.id, materias.nombre, carreras.nombre AS nombre_carrera, materias.descripcion
+    FROM materias
+    INNER JOIN carreras ON materias.carrera_id = carreras.id
+  `;
+
+  poll.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al obtener la lista de materias:', error);
+      res.status(500).json({ message: 'Error al obtener la lista de materias' });
+      return;
+    }
+    res.json(results); // Enviar la lista de materias como respuesta
+  });
+});
+
+
 
 // Manejar otras rutas
 app.get('*', (req, res) => {
