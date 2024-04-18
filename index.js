@@ -82,7 +82,7 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Ruta para mostrar la lista de carreras
+// Ruta para mostrar la página HTML de carreras
 app.get('/carreras', validarSesion, (req, res) => {
   const filePath = path.join(__dirname, 'carreras.html');
   fs.readFile(filePath, (err, content) => {
@@ -95,16 +95,17 @@ app.get('/carreras', validarSesion, (req, res) => {
   });
 });
 
-// Ruta para obtener la lista de carreras
-app.get('/carreras', validarSesion, (req, res) => {
+// Ruta para obtener la lista de carreras desde la base de datos
+app.get('/api/carreras', validarSesion, (req, res) => {
   const query = 'SELECT * FROM carreras';
+
   poll.query(query, (error, results) => {
     if (error) {
       console.error('Error al obtener la lista de carreras:', error);
       res.status(500).json({ message: 'Error al obtener la lista de carreras' });
       return;
     }
-    res.json(results); // Enviar la lista de carreras como respuesta
+    res.json(results); // Enviar la lista de carreras como respuesta en formato JSON
   });
 });
 

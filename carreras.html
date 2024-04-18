@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carreras</title>
-    <script>
-        
-        // Función para obtener y mostrar la lista de carreras
-        function obtenerCarreras() {
-            fetch("/carreras")
-                .then(response => response.json())
-                .then(data => {
-                    const listaCarreras = document.getElementById("listaCarreras");
-                    listaCarreras.innerHTML = ""; // Limpiar la lista antes de agregar las nuevas carreras
-                    data.forEach(carrera => {
-                        const li = document.createElement("li");
-                        li.textContent = carrera.nombre;
-                        listaCarreras.appendChild(li);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error al obtener la lista de carreras:", error);
-                });
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Carreras</title>
+  <script>
+    // Función para manejar el error al obtener la lista de carreras
+    function handleError(error) {
+      console.error("Error al obtener la lista de carreras:", error);
+      // Puedes agregar aquí código para mostrar un mensaje de error al usuario si lo deseas
+    }
+
+    // Lógica para obtener la lista de carreras desde el servidor
+    fetch('/api/carreras')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al obtener la lista de carreras');
         }
+        return response.json();
+      })
+      .then(carreras => {
+        // Lógica para manejar la lista de carreras recibida
+        const carrerasList = document.getElementById('carreras-list');
+        carreras.forEach(carrera => {
+          const listItem = document.createElement('li');
+          listItem.textContent = carrera.nombre;
+          carrerasList.appendChild(listItem);
+        });
+      })
+      .catch(handleError); // Manejar cualquier error que ocurra durante la solicitud
 
-        // Llamar a la función para obtener las carreras cuando se cargue la página
-        window.onload = obtenerCarreras;
-
-        function irAlInicio() {
+      function irAlInicio() {
             window.location.href = "/";
         }
 
@@ -42,15 +44,14 @@
                 });
         }
 
-    </script>
+  </script>
 </head>
 <body>
-    <h1>Listado de Carreras</h1>
-    <ul id="listaCarreras">
-        <!-- carreras -->
-    </ul>
+  <h1>Lista de Carreras</h1>
+  <ul id="carreras-list"></ul>
 
-    <button onclick="irAlInicio()">Inicio</button>
-    <button onclick="cerrarSesion()">Cerrar Sesión</button>
+  <button onclick="irAlInicio()">Inicio</button>
+  <button onclick="cerrarSesion()">Cerrar Sesión</button>
+
 </body>
 </html>
