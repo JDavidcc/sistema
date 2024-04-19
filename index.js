@@ -124,6 +124,41 @@ app.get('/carreras', validarSesion, (req, res) => {
   });
 });
 
+    //correjir para alumnos
+
+// Ruta para mostrar la página HTML de alumnos
+app.get('/alumnos', validarSesion, (req, res) => {
+  const filePath = path.join(__dirname, 'alumnos.html');
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.status(500).send(`Error: ${err}`);
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(content);
+  });
+});
+
+// Ruta para obtener lista de alumnos  JSON
+app.get('/api/alumnos', validarSesion, (req, res) => {
+  // const query = `
+  //   SELECT alumnos.id, alumnos.nombre, alumnos.apellido, alumnos.edad, alumnos.carrera_id
+  //   FROM alumnos`;
+    const query = `
+    SELECT alumnos.nombre, alumnos.apellido, alumnos.edad, alumnos.carrera_id, carreras.nombre AS nombre_carrera
+    FROM alumnos
+    JOIN carreras ON alumnos.carrera_id = carreras.id`;
+
+  poll.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al obtener la lista de alumnos:', error);
+      res.status(500).json({ message: 'Error al obtener la lista de alumnos' });
+      return;
+    }
+    res.json(results); // Enviar la lista de alumnos JSON
+  });
+});
+
 // Ruta para obtener la lista de carreras 
 app.get('/api/carreras', validarSesion, (req, res) => {
   const query = 'SELECT * FROM carreras';
