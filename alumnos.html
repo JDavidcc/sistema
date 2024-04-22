@@ -5,37 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Listado de alumnos</title>
     <script>
-  fetch("/api/alumnos")
-    .then((response) => response.json())
-    .then((alumnos) => {
-      // Iterar sobre los alumnos y crear elementos de lista para cada uno
-      const alumnosList = document.getElementById("alumnos-list");
-      alumnos.forEach((alumno) => {
-        // const listItem = document.createElement("li");
-        // listItem.textContent = `${alumno.nombre} ${alumno.apellido}, Edad: ${alumno.edad}`;
-        // alumnosList.appendChild(listItem);
-        const listItem = document.createElement("li");
+      fetch("/api/alumnos")
+        .then((response) => response.json())
+        .then((alumnos) => {
+          // Iterar sobre los alumnos y crear elementos de lista para cada uno
+          const alumnosList = document.getElementById("alumnos-list");
+          alumnos.forEach((alumno) => {
+            const listItem = document.createElement("li");
             listItem.textContent = `${alumno.nombre} ${alumno.apellido}, Edad: ${alumno.edad}, Carrera: ${alumno.nombre_carrera}`;
             alumnosList.appendChild(listItem);
-      });
-    })
-    .catch((error) =>
-      console.error("Error al obtener los alumnos:", error)
-    );
+          });
+        })
+        .catch((error) =>
+          console.error("Error al obtener los alumnos:", error)
+        );
 
-  function irAlMenu() {
-    window.location.href = "/menu";
-  }
+      function irAlMenu() {
+        window.location.href = "/menu";
+      }
 
-  function cerrarSesion() {
-    fetch("/logout")
-      .then(() => {
-        window.location.href = "/logout";
-      })
-      .catch((error) => {
-        console.error("Error al cerrar sesión:", error);
-      });
-  }
+      function cerrarSesion() {
+        fetch("/logout")
+          .then(() => {
+            window.location.href = "/logout";
+          })
+          .catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+          });
+      }
     </script>
   </head>
   <body>

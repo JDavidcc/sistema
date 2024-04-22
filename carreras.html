@@ -1,56 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Carreras</title>
-  <script>
-  
-    function handleError(error) {
-      console.error("Error al obtener la lista de carreras:", error);
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Carreras</title>
+    <script>
+      function handleError(error) {
+        console.error("Error al obtener la lista de carreras:", error);
+      }
 
-    // obtener lista de carreras desde el servidor
-    fetch('/api/carreras')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error al obtener la lista de carreras');
-        }
-        return response.json();
-      })
-      .then(carreras => {
-        // manejar la lista de carreras recibida
-        const carrerasList = document.getElementById('carreras-list');
-        carreras.forEach(carrera => {
-          const listItem = document.createElement('li');
-          listItem.textContent = carrera.nombre;
-          carrerasList.appendChild(listItem);
-        });
-      })
-      .catch(handleError);
+      // obtener lista de carreras desde el servidor
+      fetch("/api/carreras")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Error al obtener la lista de carreras");
+          }
+          return response.json();
+        })
+        .then((carreras) => {
+          // manejar la lista de carreras recibida
+          const carrerasList = document.getElementById("carreras-list");
+          carreras.forEach((carrera) => {
+            const listItem = document.createElement("li");
+            listItem.textContent = carrera.nombre;
+            carrerasList.appendChild(listItem);
+          });
+        })
+        .catch(handleError);
 
       function irAlMenu() {
-            window.location.href = "/menu";
-        }
+        window.location.href = "/menu";
+      }
 
-        function cerrarSesion() {
-            fetch("/logout")
-                .then(() => {
-                    window.location.href = "/logout"; 
-                })
-                .catch((error) => {
-                    console.error("Error al cerrar sesión:", error);
-                });
-        }
+      function cerrarSesion() {
+        fetch("/logout")
+          .then(() => {
+            window.location.href = "/logout";
+          })
+          .catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Lista de Carreras</h1>
+    <ul id="carreras-list"></ul>
 
-  </script>
-</head>
-<body>
-  <h1>Lista de Carreras</h1>
-  <ul id="carreras-list"></ul>
-
-  <button onclick="irAlMenu()">Volver al Menu</button>
-  <button onclick="cerrarSesion()">Cerrar Sesión</button>
-
-</body>
+    <button onclick="irAlMenu()">Volver al Menu</button>
+    <button onclick="cerrarSesion()">Cerrar Sesión</button>
+  </body>
 </html>

@@ -141,9 +141,6 @@ app.get('/alumnos', validarSesion, (req, res) => {
 
 // Ruta para obtener lista de alumnos  JSON
 app.get('/api/alumnos', validarSesion, (req, res) => {
-  // const query = `
-  //   SELECT alumnos.id, alumnos.nombre, alumnos.apellido, alumnos.edad, alumnos.carrera_id
-  //   FROM alumnos`;
     const query = `
     SELECT alumnos.nombre, alumnos.apellido, alumnos.edad, alumnos.carrera_id, carreras.nombre AS nombre_carrera
     FROM alumnos
