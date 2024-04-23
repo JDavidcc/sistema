@@ -16,6 +16,7 @@ app.use(session({
 
 // validar la sesión del usuario
 function validarSesion(req, res, next) {
+  console.log(req.sesion.loggedIn);
   if (req.session.loggedIn) {
     next();
   } else {
