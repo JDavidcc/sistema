@@ -52,15 +52,15 @@ app.post('/login', (req, res) => {
 // ruta para el menú
 app.get('/menu', validarSesion, (req, res) => {
   const filePath = path.join(__dirname, 'menu.html');
-  console.log(filePath);
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      res.status(500).send(`Error: ${err}`);
-      return;
-    }
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(content);
-  });
+  console.log(__dirname);
+  // fs.readFile(filePath, (err, content) => {
+  //   if (err) {
+  //     res.status(500).send(`Error: ${err}`);
+  //     return;
+  //   }
+  //   res.writeHead(200, { 'Content-Type': 'text/html' });
+  //   res.end(content);
+  // });
 });
 
 // ruta logout
