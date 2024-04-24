@@ -16,7 +16,6 @@ app.use(session({
 
 // validar la sesión del usuario
 function validarSesion(req, res, next) {
-  console.log(req.sesion.loggedIn);
   if (req.session.loggedIn) {
     next();
   } else {
@@ -52,7 +51,6 @@ app.post('/login', (req, res) => {
 // ruta para el menú
 app.get('/menu', validarSesion, (req, res) => {
   const filePath = path.join(__dirname, 'menu.html');
-  console.log(__dirname);
   fs.readFile(filePath, (err, content) => {
     if (err) {
       res.status(500).send(`Error: ${err}`);
