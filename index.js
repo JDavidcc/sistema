@@ -3,6 +3,7 @@ const session = require('express-session');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const bodyParser = require('body-parser');
 const { ValidarUsuario } = require('./validar.js');
 const { poll } = require('./validar.js');
 
@@ -124,8 +125,6 @@ app.get('/carreras', validarSesion, (req, res) => {
   });
 });
 
-    //correjir para alumnos
-
 // Ruta para mostrar la página HTML de alumnos
 app.get('/alumnos', validarSesion, (req, res) => {
   const filePath = path.join(__dirname, 'alumnos.html');
@@ -169,6 +168,66 @@ app.get('/api/carreras', validarSesion, (req, res) => {
     res.json(results); // Enviar la lista
   });
 });
+
+//  Agregar Carreras
+
+// Middleware para analizar el cuerpo de la solicitud como JSON
+app.use(bodyParser.json());
+
+// Ruta para agregar una nueva carrera
+app.post('/api/carreras', validarSesion, (req, res) => {
+  const { nombre, duracion, descripcion } = req.body;
+
+  if (!nombre || !duracion || !descripcion) {
+    return res.status(400).json({ message: 'Se requiere proporcionar el nombre, duración y descripción de la carrera.' });
+  }
+
+  const query = 'INSERT INTO carreras (nombre, duracion, descripcion) VALUES (?, ?, ?)';
+  poll.query(query, [nombre, duracion, descripcion], (error, results) => {
+    if (error) {
+      console.error('Error al agregar nueva carrera:', error);
+      return res.status(500).json({ message: 'Error al agregar nueva carrera.' });
+    }
+    res.status(201).json({ message: 'Nueva carrera agregada con éxito.' });
+  });
+});
+
+// Agregar materias
+app.post('/api/materias', validarSesion, (req, res) => {
+  const { nombre, carrera_id, descripcion } = req.body;
+
+  if (!nombre || !carrera_id || !descripcion) {
+    return res.status(400).json({ message: 'Se requiere proporcionar el nombre, numero de identificación (id) y descripción de la materia.' });
+  }
+
+  const query = 'INSERT INTO materias (nombre, carrera_id, descripcion) VALUES (?, ?, ?)';
+  poll.query(query, [nombre, carrera_id, descripcion], (error, results) => {
+    if (error) {
+      console.error('Error al agregar nueva materia:', error);
+      return res.status(500).json({ message: 'Error al agregar nueva materia.' });
+    }
+    res.status(201).json({ message: 'Nueva materia agregada con éxito.' });
+  });
+});
+
+// Agregar alumnos
+app.post('/api/alumnos', validarSesion, (req, res) => {
+  const { nombre, apellido, edad, carrera_id } = req.body;
+
+  if (!nombre || !apellido || !edad || !carrera_id) {
+    return res.status(400).json({ message: 'Se requiere proporcionar el nombre, apellido, edad y ID de carrera del alumno.' });
+  }
+
+  const query = 'INSERT INTO alumnos (nombre, apellido, edad, carrera_id) VALUES (?, ?, ?, ?)';
+  poll.query(query, [nombre, apellido, edad, carrera_id], (error, results) => {
+    if (error) {
+      console.error('Error al agregar nuevo alumno:', error);
+      return res.status(500).json({ message: 'Error al agregar nuevo alumno.' });
+    }
+    res.status(201).json({ message: 'Nuevo alumno agregado con éxito.' });
+  });
+});
+
 
 // Manejar otras rutas
 app.get('*', (req, res) => {

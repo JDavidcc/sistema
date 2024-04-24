@@ -1,45 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Listado de Materias</title>
-    <script>
-      fetch("/api/materias")
-        .then((response) => response.json())
-        .then((materias) => {
-          const materiasList = document.getElementById("materias-list");
-          // Iterar sobre las materias y crear elementos de lista para cada una
-          materias.forEach((materia) => {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${materia.nombre} (${materia.nombre_carrera}): ${materia.descripcion}`;
-            materiasList.appendChild(listItem);
-          });
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listado de Materias</title>
+</head>
+<body>
+  <h1>Listado de Materias</h1>
+  <ul id="materias-list"></ul>
+
+  <button onclick="irAlMenu()">Volver al Menú</button>
+  <button onclick="cerrarSesion()">Cerrar Sesión</button><br />
+
+  <h2>Agregar Materia</h2>
+  <form id="agregar-materia-form">
+    <label for="nombre-materia">Nombre de la materia:</label><br>
+    <input type="text" id="nombre-materia" name="nombre-materia" required /><br />
+    
+    <label for="descripcion-materia">Descripción:</label><br>
+    <textarea id="descripcion-materia" name="descripcion-materia" required></textarea><br />
+    <label for="carrera-id">ID de la carrera:</label><br>
+    <input type="text" id="carrera-id" name="carrera-id" required><br>
+
+    <button type="submit">Agregar Materia</button>
+  </form>
+
+  <script>
+    function handleError(error) {
+      console.error("Error al obtener las materias:", error);
+    }
+
+    fetch("/api/materias")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error al obtener las materias");
+        }
+        return response.json();
+      })
+      .then((materias) => {
+        const materiasList = document.getElementById("materias-list");
+        // Iterar sobre las materias y crear elementos de lista para cada una
+        materias.forEach((materia) => {
+          const listItem = document.createElement("li");
+          // Agregar nombre, carrera_id y descripción al elemento de la lista
+          listItem.textContent = `${materia.nombre} (${materia.nombre_carrera}): ${materia.descripcion}`;
+          materiasList.appendChild(listItem);
+        });
+      })
+      .catch(handleError);
+
+    function irAlMenu() {
+      window.location.href = "/menu";
+    }
+
+    function cerrarSesion() {
+      fetch("/logout")
+        .then(() => {
+          window.location.href = "/logout";
         })
-        .catch((error) =>
-          console.error("Error al obtener las materias:", error)
-        );
+        .catch((error) => {
+          console.error("Error al cerrar sesión:", error);
+        });
+    }
 
-      function irAlMenu() {
-        window.location.href = "/menu";
-      }
+    document.addEventListener("DOMContentLoaded", function () {
+      document
+        .getElementById("agregar-materia-form")
+        .addEventListener("submit", (event) => {
+          event.preventDefault(); // Evitar que se recargue la página al enviar el formulario
 
-      function cerrarSesion() {
-        fetch("/logout")
-          .then(() => {
-            window.location.href = "/logout";
+          const nombreMateria = document.getElementById("nombre-materia").value;
+          const descripcionMateria = document.getElementById("descripcion-materia").value;
+          const carreraId = document.getElementById("carrera-id").value;
+
+          fetch("/api/materias", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nombre: nombreMateria,
+              descripcion: descripcionMateria,
+              carrera_id: carreraId
+            }),
           })
-          .catch((error) => {
-            console.error("Error al cerrar sesión:", error);
-          });
-      }
-    </script>
-  </head>
-  <body>
-    <h1>Listado de Materias</h1>
-    <ul id="materias-list"></ul>
-
-    <button onclick="irAlMenu()">Volver al Menu</button>
-    <button onclick="cerrarSesion()">Cerrar Sesión</button>
-  </body>
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error al agregar la materia.");
+              }
+              alert("Materia agregada con éxito.");
+              location.reload(); // Recargar la página para actualizar la lista de materias
+            })
+            .catch((error) => {
+              console.error("Error al agregar la materia:", error);
+              alert(
+                "Error al agregar la materia. Por favor, inténtelo de nuevo."
+              );
+            });
+        });
+    });
+  </script>
+</body>
 </html>

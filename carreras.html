@@ -1,53 +1,105 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de Carreras</title>
-    <script>
-      function handleError(error) {
-        console.error("Error al obtener la lista de carreras:", error);
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Carreras</title>
+</head>
+<body>
+  <h1>Lista de Carreras</h1>
+  <ul id="carreras-list"></ul>
 
-      // obtener lista de carreras desde el servidor
-      fetch("/api/carreras")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Error al obtener la lista de carreras");
-          }
-          return response.json();
+  <button onclick="irAlMenu()">Volver al Menú</button>
+  <button onclick="cerrarSesion()">Cerrar Sesión</button><br />
+
+  <h2>Agregar Carrera</h2>
+  <form id="agregar-carrera-form">
+    <label for="nombre-carrera">Nombre de la carrera:</label>
+    <input type="text" id="nombre-carrera" name="nombre-carrera" required /><br />
+    
+    <label for="duracion-carrera">Duración(Años):</label>
+    <input type="text" id="duracion-carrera" name="duracion-carrera" required /><br />
+
+    <label for="descripcion-carrera">Descripción:</label>
+    <textarea id="descripcion-carrera" name="descripcion-carrera" required></textarea><br />
+
+    <button type="submit">Agregar Carrera</button>
+  </form>
+
+  <script>
+    function handleError(error) {
+      console.error("Error al obtener la lista de carreras:", error);
+    }
+
+    // obtener lista de carreras desde el servidor
+    fetch("/api/carreras")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error al obtener la lista de carreras");
+        }
+        return response.json();
+      })
+      .then((carreras) => {
+        // manejar la lista de carreras recibida
+        const carrerasList = document.getElementById("carreras-list");
+        carreras.forEach((carrera) => {
+          const listItem = document.createElement("li");
+          listItem.innerHTML = `<strong>${carrera.nombre}</strong> - Duración: ${carrera.duracion}, Descripción: ${carrera.descripcion}`;
+          carrerasList.appendChild(listItem);
+        });
+      })
+      .catch(handleError);
+
+    function irAlMenu() {
+      window.location.href = "/menu";
+    }
+
+    function cerrarSesion() {
+      fetch("/logout")
+        .then(() => {
+          window.location.href = "/logout";
         })
-        .then((carreras) => {
-          // manejar la lista de carreras recibida
-          const carrerasList = document.getElementById("carreras-list");
-          carreras.forEach((carrera) => {
-            const listItem = document.createElement("li");
-            listItem.textContent = carrera.nombre;
-            carrerasList.appendChild(listItem);
-          });
-        })
-        .catch(handleError);
+        .catch((error) => {
+          console.error("Error al cerrar sesión:", error);
+        });
+    }
 
-      function irAlMenu() {
-        window.location.href = "/menu";
-      }
+    document.addEventListener("DOMContentLoaded", function () {
+      document
+        .getElementById("agregar-carrera-form")
+        .addEventListener("submit", (event) => {
+          event.preventDefault(); // Evitar que se recargue la página al enviar el formulario
 
-      function cerrarSesion() {
-        fetch("/logout")
-          .then(() => {
-            window.location.href = "/logout";
+          const nombreCarrera = document.getElementById("nombre-carrera").value;
+          const duracionCarrera = document.getElementById("duracion-carrera").value;
+          const descripcionCarrera = document.getElementById("descripcion-carrera").value;
+
+          fetch("/api/carreras", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nombre: nombreCarrera,
+              duracion: duracionCarrera,
+              descripcion: descripcionCarrera
+            }),
           })
-          .catch((error) => {
-            console.error("Error al cerrar sesión:", error);
-          });
-      }
-    </script>
-  </head>
-  <body>
-    <h1>Lista de Carreras</h1>
-    <ul id="carreras-list"></ul>
-
-    <button onclick="irAlMenu()">Volver al Menu</button>
-    <button onclick="cerrarSesion()">Cerrar Sesión</button>
-  </body>
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error al agregar la carrera.");
+              }
+              alert("Carrera agregada con éxito.");
+              location.reload(); // Recargar la página para actualizar la lista de carreras
+            })
+            .catch((error) => {
+              console.error("Error al agregar la carrera:", error);
+              alert(
+                "Error al agregar la carrera. Por favor, inténtelo de nuevo."
+              );
+            });
+        });
+    });
+  </script>
+</body>
 </html>

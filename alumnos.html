@@ -1,45 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Listado de alumnos</title>
-    <script>
-      fetch("/api/alumnos")
-        .then((response) => response.json())
-        .then((alumnos) => {
-          // Iterar sobre los alumnos y crear elementos de lista para cada uno
-          const alumnosList = document.getElementById("alumnos-list");
-          alumnos.forEach((alumno) => {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${alumno.nombre} ${alumno.apellido}, Edad: ${alumno.edad}, Carrera: ${alumno.nombre_carrera}`;
-            alumnosList.appendChild(listItem);
-          });
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listado de alumnos</title>
+</head>
+<body>
+  <h1>Listado de alumnos</h1>
+  <ul id="alumnos-list"></ul>
+
+  <button onclick="irAlMenu()">Volver al Menú</button>
+  <button onclick="cerrarSesion()">Cerrar Sesión</button><br />
+
+  <h2>Agregar Alumno</h2>
+  <form id="agregar-alumno-form">
+    <label for="nombre-alumno">Nombre:</label><br />
+    <input type="text" id="nombre-alumno" name="nombre-alumno" required /><br />
+
+    <label for="apellido-alumno">Apellido:</label><br />
+    <input type="text" id="apellido-alumno" name="apellido-alumno" required /><br />
+
+    <label for="edad-alumno">Edad:</label><br />
+    <input type="number" id="edad-alumno" name="edad-alumno" required /><br />
+
+    <label for="carrera-id">ID de la carrera:</label><br />
+    <input type="text" id="carrera-id" name="carrera-id" required /><br />
+
+    <button type="submit">Agregar Alumno</button>
+  </form>
+
+  <script>
+    function handleError(error) {
+      console.error("Error al obtener los alumnos:", error);
+    }
+
+    fetch("/api/alumnos")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error al obtener los alumnos");
+        }
+        return response.json();
+      })
+      .then((alumnos) => {
+        const alumnosList = document.getElementById("alumnos-list");
+        // Iterar sobre los alumnos y crear elementos de lista para cada uno
+        alumnos.forEach((alumno) => {
+          const listItem = document.createElement("li");
+          listItem.textContent = `${alumno.nombre} ${alumno.apellido}, Edad: ${alumno.edad}, Carrera: ${alumno.nombre_carrera}`;
+          alumnosList.appendChild(listItem);
+        });
+      })
+      .catch(handleError);
+
+    function irAlMenu() {
+      window.location.href = "/menu";
+    }
+
+    function cerrarSesion() {
+      fetch("/logout")
+        .then(() => {
+          window.location.href = "/logout";
         })
-        .catch((error) =>
-          console.error("Error al obtener los alumnos:", error)
-        );
+        .catch((error) => {
+          console.error("Error al cerrar sesión:", error);
+        });
+    }
 
-      function irAlMenu() {
-        window.location.href = "/menu";
-      }
+    document.addEventListener("DOMContentLoaded", function () {
+      document
+        .getElementById("agregar-alumno-form")
+        .addEventListener("submit", (event) => {
+          event.preventDefault(); // Evitar que se recargue la página al enviar el formulario
 
-      function cerrarSesion() {
-        fetch("/logout")
-          .then(() => {
-            window.location.href = "/logout";
+          const nombreAlumno = document.getElementById("nombre-alumno").value;
+          const apellidoAlumno = document.getElementById("apellido-alumno").value;
+          const edadAlumno = document.getElementById("edad-alumno").value;
+          const carreraId = document.getElementById("carrera-id").value;
+
+          fetch("/api/alumnos", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nombre: nombreAlumno,
+              apellido: apellidoAlumno,
+              edad: edadAlumno,
+              carrera_id: carreraId,
+            }),
           })
-          .catch((error) => {
-            console.error("Error al cerrar sesión:", error);
-          });
-      }
-    </script>
-  </head>
-  <body>
-    <h1>Listado de alumnos</h1>
-    <ul id="alumnos-list"></ul>
-
-    <button onclick="irAlMenu()">Volver al Menu</button>
-    <button onclick="cerrarSesion()">Cerrar Sesión</button>
-  </body>
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error al agregar el alumno.");
+              }
+              alert("Alumno agregado con éxito.");
+              location.reload(); // Recargar la página para actualizar la lista de alumnos
+            })
+            .catch((error) => {
+              console.error("Error al agregar el alumno:", error);
+              alert(
+                "Error al agregar el alumno. Por favor, inténtelo de nuevo."
+              );
+            });
+        });
+    });
+  </script>
+</body>
 </html>
